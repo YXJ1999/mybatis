@@ -2,6 +2,7 @@ package com.yang.mybatis.test;
 
 import com.yang.mybatis.bean.Employee;
 import com.yang.mybatis.dao.EmployeeMapper;
+import com.yang.mybatis.dao.EmployeeMapperAnnotation;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionException;
@@ -43,6 +44,21 @@ public class MybatisTest {
         System.out.println(employee);
         sqlSession.close();
     }
+
+    /**
+     * 1、接口式编程
+     * 原生：Dao ====>DaoImpl
+     * mybatis Mapper ====>xxMapper.xml
+     * 2、SqlSession代表和数据库的一次会话；用完必须关闭
+     * 3、SqlSession和connection一样他都是非线成安全的，每次使用到要去获得新的对象
+     * 不要放在成员变量中
+     * 4、mapper接口没有实现类，但是mybatis会为接口生成一个代理对象
+     * EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
+     * 5、两个重要文件：
+     * mybatis的全局配置文件：
+     * sql映射文件：保存了每一个sql语句的映射信息
+     * @throws IOException
+     */
     @Test
     public void testMybatisDao() throws IOException {
         String resource="mybatis-config.xml";
@@ -51,10 +67,22 @@ public class MybatisTest {
         SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
         //2、获取sqlSession对象
         SqlSession sqlSession = sqlSessionFactory.openSession();
-        //3、
+        //3、获取接口的实现对象
+        //会为接口自动创建一个代理对象
         EmployeeMapper mapper = sqlSession.getMapper(EmployeeMapper.class);
         Employee employee = mapper.getEmployeeById(1);
         System.out.println(employee);
+        sqlSession.close();
+    }
+    @Test
+    public void test01() throws IOException {
+        String resource="mybatis-config.xml";
+        InputStream inputStream = Resources.getResourceAsStream(resource);
+        SqlSessionFactoryBuilder sqlSessionFactoryBuilder = new SqlSessionFactoryBuilder();
+        SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBuilder.build(inputStream);
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        EmployeeMapperAnnotation mapper = sqlSession.getMapper(EmployeeMapperAnnotation.class);
+        System.out.println(mapper.getEmployeeById(1));
         sqlSession.close();
     }
 }
