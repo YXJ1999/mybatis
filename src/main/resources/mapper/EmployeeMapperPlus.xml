@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yang.mybatis.dao.EmployeeMapperPlus">
+    <!--resultMap自定义JavaBean的规则
+    type:自定义规则的JavaBean(可以用别名但是不推荐)
+    id:唯一标识
+    -->
+    <resultMap id="Mybean" type="com.yang.mybatis.bean.Employee">
+    <!--指定主键列的封装规则
+    id会定义主键，底层会有优化
+    column:指定哪一列
+    property:指定对应的JavaBean属性
+    -->
+        <id column="id" property="id"/>
+    <!--result定义普通的封装规则-->
+        <result column="last_name" property="lastname"/>
+    <!--其他的会自动封装:定义了类建议把类全写上-->
+        <result property="email" column="email"/>
+        <result property="gender" column="gender"/>
+    </resultMap>
+    <select id="getEmpById" resultType="emp">
+        select * from tbl_employee where id = #{id}
+    </select>
+<!-- 联合查询使用级联属性封装结果集   -->
+    <resultMap id="MyDifBean" type="com.yang.mybatis.bean.Employee">
+<id column="id" property="id"/>
+        <result column="last_name" property="lastName"/>
+        <result column="gender" property="gender"/>
+        <result column="did" property="dept.id"/>
+        <result column="dept" property="dept_departmentName"/>
+    </resultMap>
+    <select id="getEmpAndDept" resultMap="MyDifBean">
+        select e.id id ,e.last_name last_name,e.gender gender,
+               e.d_id d_id,d.id did,d.dept_name dept_name from
+                tbl_employee e,tbl_dept d
+                where e.d_id=d.id and e.id=#{id}
+    </select>
+</mapper>

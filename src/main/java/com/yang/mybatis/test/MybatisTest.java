@@ -3,6 +3,7 @@ package com.yang.mybatis.test;
 import com.yang.mybatis.bean.Employee;
 import com.yang.mybatis.dao.EmployeeMapper;
 import com.yang.mybatis.dao.EmployeeMapperAnnotation;
+import com.yang.mybatis.dao.EmployeeMapperPlus;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionException;
@@ -125,6 +126,18 @@ public class MybatisTest {
 //        Map<String, Object> map = mapper.getEmpByIdReturnMap(1);
         Map<Integer, Employee> map = mapper.getEmpByLastNameLikeReturnMap("tom");
         System.out.println(map);
+        sqlSession.close();
+    }
+    @Test
+    public void test5() throws Exception{
+        SqlSessionFactory sqlSessionFactory=getSqlSessionFactory();
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        EmployeeMapperPlus mapper = sqlSession.getMapper(EmployeeMapperPlus.class);
+//        Employee empById = mapper.getEmpById(1);
+//        System.out.println(empById);
+        Employee empAndDept = mapper.getEmpAndDept(1);
+        System.out.println(empAndDept);
+        System.out.println(empAndDept.getDept());
         sqlSession.close();
     }
 }

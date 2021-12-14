@@ -23,7 +23,7 @@ value：设置项取值
 	type：要起别名的全类名,默认别名是类名小写
 	alias：指定新的别名
 	-->
-<!--		<typeAlias type="com.yang.mybatis.bean.Employee" alias="emp"/>-->
+		<typeAlias type="com.yang.mybatis.bean.Employee" alias="emp"/>
 <!--package批量起别名可以为某个包下的类或者子包下的类批量起别名，name属性就是包名，默认别名是类名小写别名不区分大小写
 在package情况下可以使用@Alias给类取别名
 -->
@@ -84,6 +84,7 @@ class使用接口的全类名
 简单的用class
 -->
 		<mapper class="com.yang.mybatis.dao.EmployeeMapperAnnotation"/>
+		<mapper resource="mapper/EmployeeMapperPlus.xml"/>
 		<mapper resource="mapper/EmployeeMapper.xml" />
 		<mapper resource="mapper/EmployeeDao.xml"/>
 <!--<package name="com.yang.mybatis.bean"/>在同一文件下文件名与接口名需一直-->
