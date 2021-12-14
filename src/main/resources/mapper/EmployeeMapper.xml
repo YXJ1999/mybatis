@@ -2,13 +2,86 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.yang.mybatis.bean.Employee">
+<mapper namespace="com.yang.mybatis.dao.EmployeeMapper">
     <!--名称空间namespace
         唯一标识 id
         返回类型resultType
     -->
     <select id="selectBlog" resultType="com.yang.mybatis.bean.Employee">
         select * from tbl_employee where id = #{1};
+    </select>
+    <!-- parameterType参数类型可以省略
+       mysql支持逐渐自增，自增主键的获取，mybatis也是利用statement.getGenreateesKeys();
+       useGeneratedKeys="true"使用主键自增值的策略
+       keyProperty:指定对应的主键睡醒，也就是mybatis获取到主键值以后，就将这个值封装给javabean的哪一个属性
+       -->
+    <!--orcal不支持主键自增；Orcal使用序列来模拟自增
+        每次插入的数据的主键是从序列中拿到这个值
+    -->
+<!--    <insert id="">-->
+<!--&lt;!&ndash;keyProperty查出的主键值封装给JavaBean的哪一个属性-->
+<!--order：before在当前sql执行之前执行-->
+<!--resultType返回值类型&ndash;&gt;-->
+<!--        <selectKey keyProperty="id" order="BEFORE" resultType="Integer"></selectKey>-->
+<!--        update tbl_employee set last_name = #{lastName},email=#{email},gender=#{gender} where id=#{id};-->
+<!--    </insert>-->
+
+    <insert id="add" parameterType="com.yang.mybatis.bean.Employee" useGeneratedKeys="true" keyProperty="id">
+        insert into tbl_employee(last_name,email,gender) values(#{lastName},#{email},#{gender});
+    </insert>
+    <update id="update" parameterType="com.yang.mybatis.bean.Employee">
+        update tbl_employee set last_name = #{lastName},email=#{email},gender=#{gender} where id=#{id};
+    </update>
+    <delete id="delete" parameterType="_int">
+        delete from tbl_employee where id=#{id};
+    </delete>
+    <!--mybatis会做特殊处理
+        多个参数会被封装成一个map
+        key:param1....paramN,或者参数的
+        #{}就是从map中获取指定的key的值
+    -->
+<!--    <select id="getEmpByIdAndLastName" resultType="emp">-->
+<!--        select * from tbl_employee where id=#{param1} and last_name=#{param2};-->
+<!--    </select>-->
+    <select id="getEmpByIdAndLastName" resultType="com.yang.mybatis.bean.Employee">
+        select * from tbl_employee where id=#{id} and last_name=#{lastName};
+    </select>
+<!--可以使用map传参 建议使用pojo-->
+<!--    如果传入的是Collection(List、set)类型或者是数组，
+也会特殊处理，也是把传入的list或数组封装到map中
+key:Collection(collection) 如果是List还可以使用这个key(list)
+数组（array）取出第一个值#{list[0]}-->
+    <select id="getEmpByMap" resultType="emp">
+        select * from tbl_employee where id=#{id} and last_name=#{lastName};
+    </select>
+<!--#{}可以取得map的值或者pojo对象的属性值
+    ${}可以取得map的值或者pojo对象的属性值
+    #{}:是以预编译的形式，将参数设置到sql语句中PreparedStatement
+    ${}:去除的值直接拼装在sql语句中；会有安全问题
+    大多情况下使用#{}
+    原生jdbc不支持占位符的地方我们可以使用${进行取值}
+    比如分表：
+    select * from
+    #{}：更丰富的用法：
+    规定参数的一些规则
+    #{department, mode=OUT, jdbcType=CURSOR, javaType=ResultSet, resultMap=departmentResultMap}
+    jdbcType通常需要在某种特定的条件下设置：
+    在我们数据位null的时候，有些数据库可能不能识别mybatis对null的默认处理。比如Oracle的（报错）：
+    JdbcType OTHER:无效的类型；因为mybatis对所有的null都映射的是原生Jdbc OTHER oracle不兼容指定;
+    两种解决办法
+    #{department,jdbcType=NULL}
+    jdbctypeForNUll=Null在mybatis-config.xml setting中设置
+    -->
+    <!--返回一个集合resultType写List的泛型-->
+    <select id="getEmployeeByLastNameLike" resultType="emp">
+        select * from tbl_employee where last_name like #{lastName};
+    </select>
+<!--回返值为map-->
+    <select id="getEmpByIdReturnMap" resultType="map">
+        select * from tbl_employee where id=#{id}
+    </select>
+    <select id="getEmpByLastNameLikeReturnMap" resultType="emp">
+        select * from tbl_employee where last_name=#{id}
     </select>
 </mapper>
 
