@@ -1,5 +1,7 @@
 package com.yang.mybatis.bean;
 
+import java.util.List;
+
 public class Department {
     /**
      * CREATE TABLE tbl_dept(
@@ -12,13 +14,23 @@ public class Department {
      */
     private Integer id;
     private String departmentName;
+    private List<Employee> employeeList;
+
+    public List<Employee> getEmployeeList() {
+        return employeeList;
+    }
+
+    public void setEmployeeList(List<Employee> employeeList) {
+        this.employeeList = employeeList;
+    }
 
     public Department() {
     }
 
-    public Department(Integer id, String departmentName) {
+    public Department(Integer id, String departmentName, List<Employee> employeeList) {
         this.id = id;
         this.departmentName = departmentName;
+        this.employeeList = employeeList;
     }
 
     public Integer getId() {
@@ -42,6 +54,7 @@ public class Department {
         return "Department{" +
                 "id=" + id +
                 ", departmentName='" + departmentName + '\'' +
+                ", employeeList=" + employeeList +
                 '}';
     }
 }

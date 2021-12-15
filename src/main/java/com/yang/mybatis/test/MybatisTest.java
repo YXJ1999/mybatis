@@ -1,6 +1,8 @@
 package com.yang.mybatis.test;
 
+import com.yang.mybatis.bean.Department;
 import com.yang.mybatis.bean.Employee;
+import com.yang.mybatis.dao.DepartmentMapper;
 import com.yang.mybatis.dao.EmployeeMapper;
 import com.yang.mybatis.dao.EmployeeMapperAnnotation;
 import com.yang.mybatis.dao.EmployeeMapperPlus;
@@ -135,9 +137,20 @@ public class MybatisTest {
         EmployeeMapperPlus mapper = sqlSession.getMapper(EmployeeMapperPlus.class);
 //        Employee empById = mapper.getEmpById(1);
 //        System.out.println(empById);
-        Employee empAndDept = mapper.getEmpAndDept(1);
-        System.out.println(empAndDept);
-        System.out.println(empAndDept.getDept());
+//        Employee empAndDept = mapper.getEmpAndDept(1);
+        Employee empByIdStep = mapper.getEmpByIdStep(1);
+        System.out.println(empByIdStep);
+        System.out.println(empByIdStep.getDept());
+        sqlSession.close();
+    }
+    @Test
+    public void test6() throws Exception{
+        SqlSessionFactory sqlSessionFactory=getSqlSessionFactory();
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        DepartmentMapper mapper = sqlSession.getMapper(DepartmentMapper.class);
+        Department dept = mapper.getDeptByIdPlus(1);
+        System.out.println(dept);
+        System.out.println(dept.getEmployeeList());
         sqlSession.close();
     }
 }

@@ -32,10 +32,50 @@
         <result column="did" property="dept.id"/>
         <result column="dept" property="dept_departmentName"/>
     </resultMap>
-    <select id="getEmpAndDept" resultMap="MyDifBean">
+    <select id="getEmpAndDept" resultMap="MyDifBean1">
         select e.id id ,e.last_name last_name,e.gender gender,
                e.d_id d_id,d.id did,d.dept_name dept_name from
                 tbl_employee e,tbl_dept d
                 where e.d_id=d.id and e.id=#{id}
     </select>
+    <resultMap id="MyDifBean1" type="com.yang.mybatis.bean.Employee">
+        <id column="id" property="id"/>
+        <result property="last_name" column="lastName"/>
+        <result property="gender" column="gender"/>
+        <!--association可以指定联合的JavaBean对象
+        property="dept"指定哪一个属性是联合的对象
+        javaType指定属性对象的类型[不能省略]
+        -->
+       <association property="dept" javaType="com.yang.mybatis.bean.Department">
+           <id column="did" property="id"/>
+           <result column="dept_name" property="departmentName"/>
+       </association>
+    </resultMap>
+    <!--使用association进行分布查询
+        1现根据员工id查询员工
+        2根据员工id查询员工信息中d_id值去部门查出部门信息
+        3部门设置到员工中
+    -->
+    <resultMap id="MyBean2" type="emp">
+        <id column="id" property="id"/>
+        <result column="last_name" property="lastName"/>
+        <result column="eamil" property="eamil"/>
+        <result column="gender" property="gender"/>
+        <!--association定义对象关联规则
+            select:表明当前属性是调用select指定的方法查出的结果
+            column：指定将那一列的值传给这个方法
+        -->
+        <association property="dept" select="com.yang.mybatis.dao.DepartmentMapper.getDeptById" column="d_id"></association>
+    </resultMap>
+    <select id="getEmpByIdStep" resultMap="MyBean2">
+        select * from tbl_employee where id = #{id}
+    </select>
+    <!--可以使用延迟加载（懒加载）：（按需加载）
+        Employee==>Dept:
+            我们每次查询Employee对象的时候，都将一起查询出来。
+            部门信息在我们使用的时候再加上去
+            分段查询的基础上两个配置
+    -->
+    <!--=================================association==================================-->
+    <!--查询部门的时候将所有的员工查询出来-->
 </mapper>
