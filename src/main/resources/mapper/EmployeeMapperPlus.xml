@@ -78,4 +78,7 @@
     -->
     <!--=================================association==================================-->
     <!--查询部门的时候将所有的员工查询出来-->
+    <select id="getEmpsByDeptId" resultType="com.yang.mybatis.bean.Employee">
+        select * from tbl_employee where d_id=#{id}
+    </select>
 </mapper>
