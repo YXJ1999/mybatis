@@ -91,6 +91,7 @@ class使用接口的全类名
 		<mapper resource="mapper/EmployeeMapper.xml" />
 		<mapper resource="mapper/EmployeeDao.xml"/>
 		<mapper resource="mapper/DepartmentMapper.xml"/>
+		<mapper resource="mapper/EmployeeMapperDynamicSQL.xml"/>
 <!--<package name="com.yang.mybatis.bean"/>在同一文件下文件名与接口名需一直-->
 	</mappers>
 </configuration>

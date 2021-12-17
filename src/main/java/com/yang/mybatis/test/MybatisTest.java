@@ -2,10 +2,7 @@ package com.yang.mybatis.test;
 
 import com.yang.mybatis.bean.Department;
 import com.yang.mybatis.bean.Employee;
-import com.yang.mybatis.dao.DepartmentMapper;
-import com.yang.mybatis.dao.EmployeeMapper;
-import com.yang.mybatis.dao.EmployeeMapperAnnotation;
-import com.yang.mybatis.dao.EmployeeMapperPlus;
+import com.yang.mybatis.dao.*;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionException;
@@ -15,10 +12,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MybatisTest {
     public SqlSessionFactory getSqlSessionFactory() throws IOException {
@@ -152,6 +146,32 @@ public class MybatisTest {
         Department dept = mapper.getDeptByIdStep(1);
         System.out.println(dept);
         System.out.println(dept.getEmployeeList());
+        sqlSession.close();
+    }
+    @Test
+    public void testDynamicSql () throws Exception{
+        SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        EmployeeMapperDynamicSQL mapper = sqlSession.getMapper(EmployeeMapperDynamicSQL.class);
+//        List<Employee> emps = mapper.getEmpsByConditionIf(new Employee(1, "o", "1@qq.com", null));
+//        List<Employee> emps = mapper.getEmpsByConditionChoose(new Employee(1, "o", "1@qq.com", null));
+//        mapper.updateEmp(new Employee(1, "o", "1@qq.com", null));
+//        sqlSession.commit();
+//        for (Employee emp:emps){
+//            System.out.println(emp);
+//        }
+        //查询的时候如果某些条件没带可能sql拼装会有问题
+        //1、给where后面加上1=1，以后的条件都 and xxx
+        //2、mybatis使用where标签会将where标签中的多出来的and或者or去掉
+        //where只会去掉最开始的and或者or
+//        List<Employee> empsByConditionForeach = mapper.getEmpsByConditionForeach(Arrays.asList(1, 2, 3, 4));
+        List<Employee> emps=new ArrayList<>();
+        Department department = new Department(1, "开发部", null);
+        emps.add(new Employee(null, "o", "1@qq.com", "0",department));
+        emps.add(new Employee(null, "o1", "2@qq.com", "2",department));
+        emps.add(new Employee(null, "o2", "3@qq.com", "1",department));
+        mapper.addEmps(emps);
+        sqlSession.commit();
         sqlSession.close();
     }
 }
